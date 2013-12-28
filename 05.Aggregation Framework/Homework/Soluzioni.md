@@ -1,5 +1,6 @@
 Es 5.2
 
+```javascript
 db.zips.aggregate([ 
 	{$match: 
 		{$or : [{"state":"NY"},{"state":"CA"}]} 
@@ -15,9 +16,11 @@ db.zips.aggregate([
 		{_id:"total", "average":{$avg:"$population"}} 
 	}
 ])
+```
 
 Es 5.3
 
+```javascript
 db.grades.aggregate([
 	{ $unwind : "$scores" },
 	{ $match : 
@@ -39,9 +42,11 @@ db.grades.aggregate([
 		{avg : 1}
 	}
 ])
+```
 
 Es 5.4
 
+```javascript
 db.zips.aggregate([
 	{ $project: 
 		{ first_char: 
@@ -60,3 +65,4 @@ db.zips.aggregate([
 		}
 	}
 ])
+```
