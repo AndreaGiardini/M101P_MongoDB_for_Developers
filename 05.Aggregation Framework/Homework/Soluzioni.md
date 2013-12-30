@@ -61,14 +61,10 @@ db.zips.aggregate([
 			pop : "$pop"
 		}
 	}, 
-	{ $match:
-		{ "first_char": 
-			{$in: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] }
-		}
-	}, 
+	{ $match: {"first_char": {$regex: "[0-9]"}} },
 	{ $group: 
-		{_id:null,
-		tot_pop:{ $sum: "$pop"}
+		{ _id:"answer", 
+		total: { $sum: "$pop"}
 		}
 	}
 ])
