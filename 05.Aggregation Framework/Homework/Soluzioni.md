@@ -1,12 +1,13 @@
 Es 5.1
 ```javascript
 db.posts.aggregate([
-	{$unwind: "$comments"},
-	{$group: 
-		{"_id": "$comments.author", sum: {"$sum": 1}
+	{ $unwind: "$comments" },
+	{ $group: 
+		{"_id": "$comments.author", 
+		sum: {"$sum": 1}
 	}},
-	{$sort: {"sum": -1}},
-	{$limit:1}
+	{ $sort: {"sum": -1} },
+	{ $limit:1 }
 ])
 ```
 
@@ -16,7 +17,7 @@ Es 5.2
 db.zips.aggregate([ 
 	{ $group: 
 		{ _id : {state:"$state", city:"$city"}, 
-		population : { $sum : "$pop"} } 
+		population: { $sum : "$pop"} } 
 	},  
 	{ $match:
 		{ population : {$gt: 25000}, 
@@ -24,7 +25,7 @@ db.zips.aggregate([
 	},
 	{ $group: 
 		{ _id:"answer", 
-		"average":{$avg:"$population"}} 
+		average: {$avg:"$population"}} 
 	}
 ])
 ```
@@ -38,20 +39,15 @@ db.grades.aggregate([
 		{ "scores.type" : {$ne: "quiz"}}
 	},
 	{ $group: 
-		{ _id : 
-			{ student_id : "$student_id",
-			class_id : "$class_id"
-			},
-		"average" :
-			{$avg:"$scores.score"}
+		{ _id : { student_id : "$student_id", class_id : "$class_id"},
+		average : {$avg:"$scores.score"}
 		}
 	},
 	{ $group:
-		{_id: "$_id.class_id", "avg": {$avg: "$average"}}
+		{ _id: "$_id.class_id", "avg": {$avg: "$average"}}
 	},
-	{ $sort: 
-		{avg : 1}
-	}
+	{ $sort: {avg : -1}},
+	{ $limit:1 }
 ])
 ```
 
