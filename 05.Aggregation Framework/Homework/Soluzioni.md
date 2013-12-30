@@ -1,4 +1,5 @@
 Es 5.1
+```javascript
 db.posts.aggregate([
 	{$unwind: "$comments"},
 	{$group: 
@@ -7,23 +8,23 @@ db.posts.aggregate([
 	{$sort: {"sum": -1}},
 	{$limit:1}
 ])
+```
 
 Es 5.2
 
 ```javascript
 db.zips.aggregate([ 
-	{$match: 
-		{$or : [{"state":"NY"},{"state":"CA"}]} 
-	},
 	{ $group: 
-		{ _id : {city:"$city", state:"$state"}, 
+		{ _id : {state:"$state", city:"$city"}, 
 		population : { $sum : "$pop"} } 
 	},  
 	{ $match:
-		{"population" : {$gt: 25000}} 
+		{ population : {$gt: 25000}, 
+		"_id.state": {"$in":["CA","NY"]} }
 	},
 	{ $group: 
-		{_id:"total", "average":{$avg:"$population"}} 
+		{ _id:"answer", 
+		"average":{$avg:"$population"}} 
 	}
 ])
 ```
