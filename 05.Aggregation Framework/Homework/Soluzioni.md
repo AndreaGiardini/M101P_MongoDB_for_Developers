@@ -1,19 +1,31 @@
+Es 5.1
+```javascript
+db.posts.aggregate([
+	{ $unwind: "$comments" },
+	{ $group: 
+		{"_id": "$comments.author", 
+		sum: {"$sum": 1}
+	}},
+	{ $sort: {"sum": -1} },
+	{ $limit:1 }
+])
+```
+
 Es 5.2
 
 ```javascript
 db.zips.aggregate([ 
-	{$match: 
-		{$or : [{"state":"NY"},{"state":"CA"}]} 
-	},
 	{ $group: 
-		{ _id : {city:"$city", state:"$state"}, 
-		population : { $sum : "$pop"} } 
+		{ _id : {state:"$state", city:"$city"}, 
+		population: { $sum : "$pop"} } 
 	},  
 	{ $match:
-		{"population" : {$gt: 25000}} 
+		{ population : {$gt: 25000}, 
+		"_id.state": {"$in":["CA","NY"]} }
 	},
 	{ $group: 
-		{_id:"total", "average":{$avg:"$population"}} 
+		{ _id:"answer", 
+		average: {$avg:"$population"}} 
 	}
 ])
 ```
@@ -27,20 +39,15 @@ db.grades.aggregate([
 		{ "scores.type" : {$ne: "quiz"}}
 	},
 	{ $group: 
-		{ _id : 
-			{ student_id : "$student_id",
-			class_id : "$class_id"
-			},
-		"average" :
-			{$avg:"$scores.score"}
+		{ _id : { student_id : "$student_id", class_id : "$class_id"},
+		average : {$avg:"$scores.score"}
 		}
 	},
 	{ $group:
-		{_id: "$_id.class_id", "avg": {$avg: "$average"}}
+		{ _id: "$_id.class_id", "avg": {$avg: "$average"}}
 	},
-	{ $sort: 
-		{avg : 1}
-	}
+	{ $sort: {avg : -1}},
+	{ $limit:1 }
 ])
 ```
 
@@ -54,14 +61,10 @@ db.zips.aggregate([
 			pop : "$pop"
 		}
 	}, 
-	{ $match:
-		{ "first_char": 
-			{$in: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] }
-		}
-	}, 
+	{ $match: {"first_char": {$regex: "[0-9]"}} },
 	{ $group: 
-		{_id:null,
-		tot_pop:{ $sum: "$pop"}
+		{ _id:"answer", 
+		total: { $sum: "$pop"}
 		}
 	}
 ])
